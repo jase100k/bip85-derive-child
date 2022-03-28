@@ -2,9 +2,12 @@
 
 Installation:
 
-git clone https://github.com/jase100k/bip85-derive-child.git
-cd bip85-derive-child
-pip install bip85
+git clone https://github.com/jase100k/bip85-derive-child.git; 
+
+cd bip85-derive-child; 
+
+pip install bip85; 
+
 
 Usage:
 
