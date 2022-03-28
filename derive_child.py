@@ -32,7 +32,6 @@ def _bip32_master_seed_to_xprv(bip32_master_seed: bytes):
     return xprv
 
 # test seed words
-#seed_words = "winter globe evidence sad ivory total fix cry replace crucial trust excess"
 bip85 = BIP85()
 # english wordlist 
 language = 'english'
