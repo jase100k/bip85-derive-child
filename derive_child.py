@@ -21,9 +21,10 @@
 
 
 from bip85 import BIP85
-from mnemonic import Mnemonic as bip39
+from mnemonic import Mnemonic 
 from bip85 import app
 from pycoin.symbols.btc import network as BTC
+import getpass
 
 def _bip32_master_seed_to_xprv(bip32_master_seed: bytes):
     if len(bip32_master_seed) < 16 or len(bip32_master_seed) > 64:
@@ -31,32 +32,49 @@ def _bip32_master_seed_to_xprv(bip32_master_seed: bytes):
     xprv = BTC.keys.bip32_seed(bip32_master_seed).hwif(as_private=True)
     return xprv
 
-# test seed words
-bip85 = BIP85()
 # english wordlist 
 language = 'english'
+bip39 = Mnemonic(language)
+bip85 = BIP85()
+
+
 # How many words for the BIP85 mnemomic
 num_words = 12
 index = 0
 
-print("Please input your seed words. ")
+print("Please input your master seed words. ")
 seed_words = input()
-print("Enter choose the amount of words, 12, 18 or 24")
-num_words = int(input())
+if bip39.check(seed_words) == False:
+    print("Seed words check: FAIL")
+    print("Exiting: -1.")
+    exit(-1)
+
+print("Seed words check: OK")
+
+passphrase = getpass.getpass(prompt="Please input passphrase: ")
+passphrase2 = getpass.getpass(prompt="Passphrase again: ")
+
+if passphrase != passphrase2:
+    print("Error: passphrase don't match")
+    print("Exiting: -3")
+    exit(-3)
+
+num_words = int(input("Enter choose the amount of words, 12, 18 or 24: "))
 
 if num_words in (12,18,24):
     num_words = num_words
 else:
     print("Error: amount of words should be 12, 18 or 24.")
-    exit(-1)
+    print("Exiting: -4")
+    exit(-4)
 
-print("Please input the BIP85 index.")
-index = int(input())
+index = int(input("Please input the BIP85 index: "))
 
-xprv = _bip32_master_seed_to_xprv(bip39.to_seed(seed_words))
-#print ("xprv:", xprv)
-print("Child seed words from index", index)
+xprv = _bip32_master_seed_to_xprv(bip39.to_seed(seed_words, passphrase))
+
+print("Child seed words from index: " + str(index))
 print(app.bip39(xprv, language, num_words, index))
+
 
 
 
